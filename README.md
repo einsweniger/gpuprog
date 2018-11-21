@@ -39,7 +39,14 @@ After that, you'll be able to execute as **regular user**:
 
     pip install -r requirements.txt
 
+
+## review configuration
+
+check config.py for settings and change to your preferences.
+
 ## run program
 
-    python -m fsq.fsq
+    python -m ex4.ex4
 
+You can reload your edited shaders by pressing [R] on your Keyboard.
+You don't have to restart the program.

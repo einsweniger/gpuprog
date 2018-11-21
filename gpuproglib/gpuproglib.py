@@ -8,6 +8,7 @@ from config import OPENGL_VERSION, WINDOW_SIZE
 class WindowInfo:
     def __init__(self):
         self.size = (0, 0)
+        self.mouse_pressed = False
         self.mouse = (0, 0)
         self.wheel = 0
         self.time: float = 0.0
@@ -35,6 +36,7 @@ class Window(QtOpenGL.QGLWidget):
         fmt.setSampleBuffers(True)
         fmt.setDepthBufferSize(24)
         super().__init__(fmt, None)
+
         self.setFixedSize(size[0], size[1])
         self.move(QtWidgets.QDesktopWidget().rect().center() - self.rect().center())
         self.setWindowTitle(title)
@@ -62,6 +64,15 @@ class Window(QtOpenGL.QGLWidget):
 
     def mouseMoveEvent(self, event):
         self.wnd.mouse = (event.x(), event.y())
+
+    def mousePressEvent(self, evt):
+        self.wnd.mouse = (evt.x(), evt.y())
+        self.wnd.mouse_pressed = True
+        self.update()
+
+    def mouseReleaseEvent(self, evt):
+        self.wnd.mouse_pressed = False
+        self.update()
 
     def wheelEvent(self, event):
         self.wnd.wheel += event.angleDelta().y()

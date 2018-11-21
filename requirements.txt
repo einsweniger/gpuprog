@@ -1,3 +1,5 @@
 moderngl
 numpy
 pyqt5
+objloader
+pyrr
