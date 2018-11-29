@@ -1,4 +1,5 @@
 import time
+import sys
 from abc import abstractmethod, ABC
 import numpy as np
 from PyQt5 import QtOpenGL, QtWidgets, QtCore, QtGui
@@ -56,6 +57,7 @@ class Window(QtOpenGL.QGLWidget):
             QtCore.QCoreApplication.instance().quit()
         elif event.key() == QtCore.Qt.Key_R:
             self.iface.reload()
+            sys.stdout.flush()
 
         self.wnd.keys[event.nativeVirtualKey() & 0xFF] = True
 
@@ -81,16 +83,17 @@ class Window(QtOpenGL.QGLWidget):
         if self.iface is None:
             self.iface = self.factory()
         self.wnd.time = time.monotonic() - self.start_time
+        self.setWindowTitle(f'{self.title} - time {self.wnd.time:4.2f}')
         self.iface.render()
         self.wnd.old_keys = np.copy(self.wnd.keys)
         self.wnd.wheel = 0
-        self.setWindowTitle(f'{self.title} - time {self.wnd.time:4.2f}')
+
         self.update()
 
 
 class WindowInterface(ABC):
     WINDOW_SIZE = WINDOW_SIZE
-    wnd: Window = None
+    wnd: WindowInfo = None
 
     @abstractmethod
     def render(self):
@@ -103,10 +106,10 @@ class WindowInterface(ABC):
 
 def run_interface(interface: type(WindowInterface)):
     app = QtWidgets.QApplication([])
-    widget = Window(interface.WINDOW_SIZE, getattr(interface, 'WINDOW_TITLE', interface.__name__))
-    interface.wnd = widget.wnd
-    widget.factory = interface
-    widget.show()
+    window = Window(interface.WINDOW_SIZE, getattr(interface, 'WINDOW_TITLE', interface.__name__))
+    interface.wnd = window.wnd
+    window.factory = interface
+    window.show()
     app.exec_()
     del app
 
